@@ -21,7 +21,7 @@ set(ACCEL_DEPENDENCIES "") # cuBLAS, cuRAND, ...
 set(ACCEL_INSTALL_DIR "/usr/local") # /usr/local, $ENV{CUDA_HOME}, $ENV{METAL_HOME}, ...
 set(DEPENDENCY_LIB_TYPE "s") # shared (s) or static (a)
 set(DGCALC_DEPENDENCY_TEST "")
-set(DGCALC_DEPENDENCY_SRC ${DGCALC_DEPENDENCY_TEST} "Base" "Types" "Kyte" "Kabbage" "Scalar" "Tennsix" "Fields")
+set(DGCALC_DEPENDENCY_SRC ${DGCALC_DEPENDENCY_TEST} "Base" "Types" "Kyte" "Scalar" )
 set(DGCALC_DEPENDENCY_LIB "")
 set(GROUPS "THIRD")
 set(THIRD_DEPENDENCY_TEST "Catch2")
@@ -29,15 +29,28 @@ set(THIRD_DEPENDENCY_SRC ${THIRD_DEPENDENCY_TEST})
 set(THIRD_DEPENDENCY_LIB "")
 
 # set to enable MPI. the value does not matter if running via another script.
-# set(NUM_PROCESSES 2)
+ set(NUM_PROCESSES 2)
 
 set(OUTPUT_STEM "zout")
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
 
-include($ENV{DGCALC_HOME}/src/dgcalc.1.cmake)
+# set(LOCAL_ROOT "")
+if (LOCAL_ROOT)
+ include(${LOCAL_ROOT}/src/dgcalc.1.cmake)
+else()
+ execute_process(COMMAND dgcalc source 1 OUTPUT_VARIABLE SOURCE1_CODE)
+ cmake_language(EVAL CODE "${SOURCE1_CODE}")
+endif()
 set(PROJECT_NAME "${PROJECT_FAMILY_NAME}${PROJECT_VERSION}${PROJECT_VERSION_NAME}_${PROJECT_VERSION_MONTH}${PROJECT_VERSION_YEAR}")
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES ${PROJECT_LANGUAGES})
-include($ENV{DGCALC_HOME}/src/dgcalc.2.cmake)
+if (LOCAL_ROOT)
+ include(${LOCAL_ROOT}/src/dgcalc.2.cmake)
+else()
+ execute_process(COMMAND dgcalc source 2 OUTPUT_VARIABLE SOURCE2_CODE)
+ cmake_language(EVAL CODE "${SOURCE2_CODE}")
+endif()
+
+
 
 

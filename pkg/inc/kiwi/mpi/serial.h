@@ -17,6 +17,8 @@
  */
 
 #include <cstdlib>
+#include <cstdint>
+#include <cstring>
 
 
 // ----------------------
@@ -53,9 +55,9 @@ namespace Serial {
 // Type System
 // ----------------
 
-using Request = int32*;
+using Request = int32_t*;
 using Aint = size_t;
-using Op = int32;
+using Op = int32_t;
 
 struct Comm {
     int id;
@@ -108,6 +110,18 @@ inline Status Status_ignore = {0};
 inline Status Statuses_ignore = {0};
 
 
+struct SerialState {
+
+   int is_initialized = 0;
+
+   // todo irecv/isend
+
+};
+
+inline
+SerialState serialstate;
+
+
 // ----------------
 // Init/Finalize
 // ----------------
@@ -115,27 +129,31 @@ inline Status Statuses_ignore = {0};
 
 inline
 int Init(int *argc, char ***argv) {
+   serialstate.is_initialized = 1;
+   return 0;
+}
+
+inline
+int Initialized(int *flag) {
+   *flag = serialstate.is_initialized;
     return 0;
 }
 
 inline
-bool Initialized(int *flag) {
-    return true;
-}
-
-inline
-bool Finalized(int* flag) {
-    return true;
+int Finalized(int* flag) {
+   *flag = !serialstate.is_initialized;
+   return 0;
 }
 
 inline
 int Finalize() {
-    return 0;
+   serialstate.is_initialized = 0;
+   return 0;
 }
 
 inline
 void Abort(Comm, int) {
-    exit(-1);
+   exit(-1);
 }
 
 
@@ -147,34 +165,34 @@ void Abort(Comm, int) {
 
 inline
 int Comm_dup(Comm, Comm*) {
-    return 0;
+   return 0;
 }
 
 inline
 int Comm_rank(Comm, int* rank) {
-    *rank = 0;
-    return 0;
+   *rank = 0;
+   return 0;
 }
 
 inline
 int Comm_size(Comm, int* size) {
-    *size = 1;
-    return 0;
+   *size = 1;
+   return 0;
 }
 
 inline
 int Comm_split(Comm, int, int, Comm*) {
-    return 0;
+   return 0;
 }
 
 inline
 int Comm_split_type(Comm, int, int, Serial::Info, Comm*) {
-    return 0;
+   return 0;
 }
 
 inline
 int Comm_free(Comm*) {
-    return 0;
+   return 0;
 }
 
 

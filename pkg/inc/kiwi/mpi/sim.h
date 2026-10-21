@@ -79,12 +79,12 @@ int MPI_Init(int* argc, char*** argv) {
 }
 
 inline
-bool MPI_Initialized(int* flag) {
+int MPI_Initialized(int* flag) {
     return Serial::Initialized(flag);
 }
 
 inline
-bool MPI_Finalized(int* flag) {
+int MPI_Finalized(int* flag) {
     return Serial::Finalized(flag);
 }
 
